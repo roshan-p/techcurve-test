@@ -16,6 +16,7 @@ class InputForm extends Component {
         this.state = {
             value: 0,
             name: '',
+            inputValue: 0,
         }
         this.selectEnergy = this.selectEnergy.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -24,26 +25,29 @@ class InputForm extends Component {
 
     selectEnergy(name) {
         let value = this.state.value;
-        if (name === 'ec') {
-            value = this.props.Electricity.value
-        }
-        if (name === 'sl') {
-            value = this.props.Solar.value
-        }
-        if (name === 'wn') {
-            value = this.props.Wind.value
-        }
+        // if (name === 'ec') {
+        //     value = this.props.Electricity.value
+        // }
+        // if (name === 'sl') {
+        //     value = this.props.Solar.value
+        // }
+        // if (name === 'wn') {
+        //     value = this.props.Wind.value
+        // }
 
-        if (name === 'gs') {
-            value = this.props.Gas.value
-        }
+        // if (name === 'gs') {
+        //     value = this.props.Gas.value
+        // }
 
         let calculateTotalEnergy = value + (this.props.TotalEnergy / 15796.1255);
+
         if (calculateTotalEnergy > 208.89) {
             alert('Total can not more than 208.89 kW')
         } else {
             if (name) {
-                this.props.addEnergy(name, value)
+                if (value > 0) {
+                    this.props.addEnergy(name, value)
+                }
             }
         }
         this.setState({ name });
@@ -55,7 +59,9 @@ class InputForm extends Component {
             if (calculateTotalEnergy > 208.89) {
                 alert('Total can not more than 208.89 kW')
             } else {
-                this.props.addEnergy(this.state.name, parseInt(event.target.value))
+                if (parseInt(event.target.value) > 0) {
+                    this.props.addEnergy(this.state.name, parseInt(event.target.value))
+                }
             }
         } else {
             console.log('no name')
