@@ -25,43 +25,30 @@ class InputForm extends Component {
 
     selectEnergy(name) {
         let value = this.state.value;
-        // if (name === 'ec') {
-        //     value = this.props.Electricity.value
-        // }
-        // if (name === 'sl') {
-        //     value = this.props.Solar.value
-        // }
-        // if (name === 'wn') {
-        //     value = this.props.Wind.value
-        // }
-
-        // if (name === 'gs') {
-        //     value = this.props.Gas.value
-        // }
-
         let calculateTotalEnergy = value + (this.props.TotalEnergy / 15796.1255);
 
         if (calculateTotalEnergy > 208.89) {
             alert('Total can not more than 208.89 kW')
         } else {
             if (name) {
-                if (value > 0) {
-                    this.props.addEnergy(name, value)
-                }
+                // if (value > 0) {
+                this.props.addEnergy(name, value)
+                //  }
             }
         }
         this.setState({ name });
     }
     handleChange(event) {
+      
         this.setState({ value: parseInt(event.target.value) });
         let calculateTotalEnergy = parseInt(event.target.value) + (this.props.TotalEnergy / 15796.1255);
         if (this.state.name) {
             if (calculateTotalEnergy > 208.89) {
                 alert('Total can not more than 208.89 kW')
             } else {
-                if (parseInt(event.target.value) > 0) {
+               // if (parseInt(event.target.value) > 0) {
                     this.props.addEnergy(this.state.name, parseInt(event.target.value))
-                }
+              //  }
             }
         } else {
             console.log('no name')
@@ -75,10 +62,10 @@ class InputForm extends Component {
         return (
 
             <Form>
-                <Button onClick={() => { this.selectEnergy('ec') }} variant={this.props.InputEnergy.name == "ec" ? "danger" : "primary"} size="lg" block>Electric City</Button>
-                <Button onClick={() => { this.selectEnergy('sl') }} variant={this.props.InputEnergy.name == "sl" ? "danger" : "primary"} size="lg" block>Solar</Button>
-                <Button onClick={() => { this.selectEnergy('gs') }} variant={this.props.InputEnergy.name == "gs" ? "danger" : "primary"} size="lg" block>Gas</Button>
-                <Button onClick={() => { this.selectEnergy('wn') }} variant={this.props.InputEnergy.name == "wn" ? "danger" : "primary"} size="lg" block>Wind</Button>
+                <Button onClick={() => { this.selectEnergy('ec') }} variant={this.props.InputEnergyName == "ec" ? "danger" : "primary"} size="lg" block>Electricity</Button>
+                <Button onClick={() => { this.selectEnergy('sl') }} variant={this.props.InputEnergyName == "sl" ? "danger" : "primary"} size="lg" block>Solar</Button>
+                <Button onClick={() => { this.selectEnergy('gs') }} variant={this.props.InputEnergyName == "gs" ? "danger" : "primary"} size="lg" block>Gas</Button>
+                <Button onClick={() => { this.selectEnergy('wn') }} variant={this.props.InputEnergyName == "wn" ? "danger" : "primary"} size="lg" block>Wind</Button>
                 <br />
                 <Form.Group controlId="formBasicPassword">
                     <Form.Control type="number" placeholder="Energy Percentage" onChange={this.handleChange} />
@@ -100,12 +87,11 @@ const mapDispatchToProps = dispatch => (
 
 const mapStateToProps = state => {
     return {
-
+        InputEnergyName: state.energyRc.inputEnergyName,
         Electricity: state.energyRc.electricity,
         Solar: state.energyRc.solar,
         Gas: state.energyRc.gas,
         Wind: state.energyRc.wind,
-        InputEnergy: state.energyRc.inputEnergy,
         TotalEnergy: state.energyRc.totalEnergy,
     }
 

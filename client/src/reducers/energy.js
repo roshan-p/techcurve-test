@@ -1,8 +1,6 @@
 const initialState = {
-    inputEnergy: {
-        name: "",
-        value: 0
-    },
+    inputEnergyName: "",
+    inputEnergyValue: 0,
     energyList: [],
     maximumTotalEnergy: 3299652.65,
     totalEnergy: 0,
@@ -32,18 +30,53 @@ let electricity = {};
 let solar = {};
 let gas = {};
 let wind = {};
+let electricityCopy = {};
+let solarCopy = {};
+let gasCopy = {};
+let windCopy = {};
+let ListCopy = {};
+let inputEnergyName = ""
 
 
 const EnergyAction = (state = initialState, action) => {
     switch (action.type) {
         case 'ADD_ENERGY':
-            //  energyList = state.energyList.map((item) => (
-            //     item.name === action.name ? { ...item, ...action } : item
-            // ))
+            inputEnergyName = action.name;
+            let valueFomrPercentage = (maximumTotalEnergy * action.value / 100);
             let newState = {}
-            let valueFomrPercentage = (maximumTotalEnergy * action.value / 100)
-            let newTotalEnergy = 0; 
+            let newTotalEnergy = 0;
             const index = state.energyList.findIndex(post => post.name === action.name)
+
+            if (action.value === 0 || !action.value) {
+                for (let i = 0; i < ListCopy.length; i++) {
+                    console.log(newTotalEnergy)
+                    let totalVal = (maximumTotalEnergy * ListCopy[i].value / 100)
+                    newTotalEnergy = newTotalEnergy + totalVal;
+
+                }
+                let currentEnergy = electricity;
+
+                if (action.name === 'ec') {
+                    electricity = electricityCopy
+                    currentEnergy = { electricity }
+                }
+                if (action.name === 'sl') {
+                    solar = solarCopy;
+                    currentEnergy = { solar }
+                }
+                if (action.name === 'wn') {
+                    wind = windCopy;
+                    currentEnergy = { wind }
+                }
+                if (action.name === 'gs') {
+                    gas = gasCopy;
+                    currentEnergy = { gas }
+                }
+
+                return Object.assign({}, state, { ...state, inputEnergyName: action.name, inputEnergyNameValue: 0, ...currentEnergy, totalEnergy: newTotalEnergy })
+
+            }
+
             let newList = energyList;
             if (index != -1) {
                 newList = [
@@ -54,86 +87,57 @@ const EnergyAction = (state = initialState, action) => {
                     },
                     ...state.energyList.slice(index + 1), // everything after current post
                 ]
-            }else{
-                newList.push({ name: action.name, value: action.value,thb: (valueFomrPercentage * 0.13) / 10,valueFomrPercentage})
+            } else {
+                newList.push({ name: action.name, value: action.value, thb: (valueFomrPercentage * 0.13) / 10, valueFomrPercentage })
             }
-          
-         
+
+            let selectedEnergy = electricity;
+            if (action.name === 'ec') {
+                electricity = {
+                    energy: valueFomrPercentage,
+                    price: (valueFomrPercentage * 0.13) / 10,
+                    value: action.value
+
+                }
+                selectedEnergy = { electricity }
+            }
+            if (action.name === 'wn') {
+                wind = {
+                    energy: valueFomrPercentage,
+                    price: (valueFomrPercentage * 0.13) / 10,
+                    value: action.value
+
+
+                }
+                selectedEnergy = { wind }
+            }
+            if (action.name === 'sl') {
+                solar = {
+                    energy: valueFomrPercentage,
+                    price: (valueFomrPercentage * 0.13) / 10,
+                    value: action.value
+
+                }
+                selectedEnergy = { solar }
+            }
+            if (action.name === 'gs') {
+                gas = {
+                    energy: valueFomrPercentage,
+                    price: (valueFomrPercentage * 0.13) / 10,
+                    value: action.value
+
+                }
+                selectedEnergy = { gas }
+            }
+            energyList = newList;
             for (let i = 0; i < energyList.length; i++) {
                 let totalVal = (maximumTotalEnergy * energyList[i].value / 100)
                 newTotalEnergy = newTotalEnergy + totalVal;
-
             }
-           
-            if (action.name === 'ec') {
-                newState = Object.assign({}, state, {
-                    inputEnergy: {
-                        name: action.name,
-                        value: action.value
-                    },
-
-                    electricity: {
-                        energy: valueFomrPercentage,
-                        price: (valueFomrPercentage * 0.13) / 10,
-                        value: action.value
-
-                    },
-                    energyList: newList,
-                    totalEnergy: newTotalEnergy
-                })
-            }
-            if (action.name === 'wn') {
-                newState = Object.assign({}, state, {
-                    inputEnergy: {
-                        name: action.name,
-                        value: action.value
-                    },
-
-                    wind: {
-                        energy: valueFomrPercentage,
-                        price: (valueFomrPercentage * 0.13) / 10,
-                        value: action.value
 
 
-                    },
-                    energyList: newList,
-                    totalEnergy: newTotalEnergy
-                })
-            }
-            if (action.name === 'sl') {
-                newState = Object.assign({}, state, {
-                    inputEnergy: {
-                        name: action.name,
-                        value: action.value
-                    },
+            newState = Object.assign({}, state, { ...selectedEnergy }, { energyList }, { inputEnergyName: action.name },{ inputEnergyValue: action.value }, { totalEnergy: newTotalEnergy })
 
-                    solar: {
-                        energy: valueFomrPercentage,
-                        price: (valueFomrPercentage * 0.13) / 10,
-                        value: action.value
-
-                    },
-                    energyList,
-                    totalEnergy: newTotalEnergy
-                })
-            }
-            if (action.name === 'gs') {
-                newState = Object.assign({}, state, {
-                    inputEnergy: {
-                        name: action.name,
-                        value: action.value
-                    },
-
-                    gas: {
-                        energy: valueFomrPercentage,
-                        price: (valueFomrPercentage * 0.13) / 10,
-                        value: action.value
-
-                    },
-                    energyList,
-                    totalEnergy: newTotalEnergy
-                })
-            }
             return newState;
 
         case 'GET_ENERGY':
@@ -142,7 +146,9 @@ const EnergyAction = (state = initialState, action) => {
             for (let i = 0; i < dataList.length; i++) {
                 let valueFomrPercentage = (maximumTotalEnergy * dataList[i].value / 100)
                 let thb = (valueFomrPercentage * 0.13) / 10;
+                console.log(totalEnergy)
                 totalEnergy = totalEnergy + valueFomrPercentage;
+                console.log(totalEnergy)
                 energyList.push({
                     _id: dataList[i]._id,
                     value: dataList[i].value,
@@ -179,17 +185,18 @@ const EnergyAction = (state = initialState, action) => {
                         price: thb,
                         value: dataList[i].value,
                     }
-
                 }
 
-
             }
-            const energyState = Object.assign({}, state, { energyList }, { totalEnergy }, { gas }, { wind }, { electricity }, { solar })
+            gasCopy = gas;
+            windCopy = wind;
+            electricityCopy = electricity;
+            solarCopy = solar;
+            ListCopy = energyList
+            const energyState = Object.assign({}, state, { ListCopy }, { energyList }, { totalEnergy }, { gas }, { wind }, { electricity }, { solar }, { gasCopy }, { windCopy }, { electricityCopy }, { solarCopy })
             return energyState;
 
         case 'POST_ENERGY':
-            console.log('POST')
-            console.log(action)
             fetch('http://localhost:4001/api/addData', {
                 method: 'POST',
                 headers: {
